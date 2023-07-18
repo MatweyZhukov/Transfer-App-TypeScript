@@ -1,7 +1,10 @@
-//Types
-import { ISVG } from "../../types/interfaces";
+//Global
+import { FC } from "react";
 
-export function SVG({ id, onClick, width, height }: ISVG) {
+//Types
+import { ISVG } from "../../types/types";
+
+export const SVG: FC<ISVG> = ({ id, onClick, width, height }) => {
   switch (id) {
     case "close":
       return (
@@ -86,4 +89,4 @@ export function SVG({ id, onClick, width, height }: ISVG) {
     default:
       return null;
   }
-}
+};

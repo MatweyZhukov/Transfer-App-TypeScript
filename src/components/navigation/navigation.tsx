@@ -1,10 +1,11 @@
 //Global
 import { NavLink } from "react-router-dom";
+import { FC } from "react";
 
 //Styles
 import "./navigation.css";
 
-function Navigation() {
+const Navigation: FC = () => {
   return (
     <div className="navigation">
       <div className="title">
@@ -33,6 +34,6 @@ function Navigation() {
       </span>
     </div>
   );
-}
+};
 
 export default Navigation;

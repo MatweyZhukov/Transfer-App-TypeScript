@@ -1,13 +1,20 @@
-//Styles
-import "./modal.css";
+//Global
+import { FC } from "react";
 
 //Components
 import { SVG } from "../SVG/SVG";
 
 //Types
-import { IModal } from "../../types/interfaces";
+import { IModal } from "../../types/types";
 
-function Modal({ modalClassName, modalContentClassName, onClick }: IModal) {
+//Styles
+import "./modal.css";
+
+const Modal: FC<IModal> = ({
+  modalClassName,
+  modalContentClassName,
+  onClick,
+}) => {
   return (
     <div className={modalClassName}>
       <div className={modalContentClassName}>
@@ -25,6 +32,6 @@ function Modal({ modalClassName, modalContentClassName, onClick }: IModal) {
       </div>
     </div>
   );
-}
+};
 
 export default Modal;

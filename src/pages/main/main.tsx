@@ -1,10 +1,11 @@
 //Global
+import { FC } from "react";
 import { NavLink } from "react-router-dom";
 
 //Styles
 import "./main.css";
 
-function Main() {
+const Main: FC = () => {
   return (
     <div className="main">
       <h1>
@@ -16,6 +17,6 @@ function Main() {
       </NavLink>
     </div>
   );
-}
+};
 
 export default Main;

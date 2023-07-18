@@ -1,39 +1,43 @@
 //Global
-import { useEffect, useState } from "react";
-import getData from "../../hooks/http.hook";
-import { v4 as uuid } from "uuid";
+import { useEffect, useState, FC } from "react";
+import axios from "axios";
 
 //Components
 import Input from "../UI/inputs/Input";
+import OptionsList from "../optionsList/OptionsList";
+
+//Types
+import { IBlockInput, IFetchingData } from "../../types/types";
 
 //Styles
 import "./blockInput.css";
 
-//Types
-import { IBlockInput } from "../../types/interfaces";
-
-function BlockInput({
+const BlockInput: FC<IBlockInput> = ({
   value,
   setValue,
   option,
   setOption,
   placeholder,
   readOnly,
-}: IBlockInput) {
+}) => {
   const [options, setOptions] = useState<string[]>([]);
 
-  useEffect(() => {
-    getData("https://www.cbr-xml-daily.ru/latest.js")
-      .then((data) => {
-        if ("rates" in data) {
-          const optionsArr = Object.entries(data.rates);
-          optionsArr.forEach((item) => item.pop());
-          const resultArr = optionsArr.map((item) => item[0]);
+  async function fetchOptions(url: string) {
+    try {
+      const response = await axios.get<IFetchingData>(url);
 
-          setOptions(resultArr);
-        }
-      })
-      .catch((err) => console.log(err));
+      const optionsArr = Object.entries(response.data.rates);
+      optionsArr.forEach((item) => item.pop());
+      const resultArr = optionsArr.map((option) => option[0]);
+
+      setOptions(resultArr);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    fetchOptions("https://www.cbr-xml-daily.ru/latest.js");
 
     //eslint-disable-next-line
   }, []);
@@ -42,25 +46,20 @@ function BlockInput({
     <div className="block-input">
       <Input
         readOnly={readOnly}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => setValue(e.target.value as IBlockInput["value"])}
         value={value}
         placeholder={placeholder}
         type="number"
       />
 
-      <select value={option} onChange={(e) => setOption(e.target.value)}>
-        <option value="Currency...">Currency...</option>
-        {options.map((option) => {
-          const id: string = uuid();
-          return (
-            <option value={option} key={id}>
-              {option}
-            </option>
-          );
-        })}
+      <select
+        value={option}
+        onChange={(e) => setOption(e.target.value as IBlockInput["option"])}
+      >
+        <OptionsList options={options} />
       </select>
     </div>
   );
-}
+};
 
 export default BlockInput;

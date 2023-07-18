@@ -1,4 +1,5 @@
 //Components
+import { FC } from "react";
 import Main from "../../pages/main/main";
 import Navigation from "../navigation/navigation";
 import Theme from "../theme/Theme";
@@ -7,7 +8,7 @@ import TransferPage from "../../pages/transferPage/TransferPage";
 //Global
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 
-function App() {
+const App: FC = () => {
   return (
     <BrowserRouter basename="/">
       <Navigation />
@@ -20,6 +21,6 @@ function App() {
       </div>
     </BrowserRouter>
   );
-}
+};
 
 export default App;

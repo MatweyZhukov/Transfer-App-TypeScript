@@ -2,7 +2,7 @@
 import { createGlobalStyle } from "styled-components";
 
 //Types
-import { ITheme } from "../../types/interfaces";
+import { ITheme } from "../../types/types";
 
 export const darkTheme = {
   fontColor: "white",

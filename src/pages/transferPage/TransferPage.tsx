@@ -4,27 +4,28 @@ import BlockInput from "../../components/blockInput/BlockInput";
 import Modal from "../../components/modal/Modal";
 
 //Global
-import { useState } from "react";
-import getData from "../../hooks/http.hook";
+import { FormEvent, useState, FC } from "react";
+import axios from "axios";
+
+//Types
+import { ICurrencies, IFetchingData, IBlockInput } from "../../types/types";
 
 //Styles
 import "./transferPage.css";
 
-//Types
+const TransferPage: FC = () => {
+  const [fromCurrency, setFromCurrency] = useState<IBlockInput["value"]>(""),
+    [toCurrency, setToCurrency] = useState<IBlockInput["value"]>("");
 
-function TransferPage() {
-  const [fromCurrency, setFromCurrency] = useState<string>(""),
-    [toCurrency, setToCurrency] = useState<string>("");
+  const [optionFrom, setOptionFrom] = useState<keyof ICurrencies | "">(""),
+    [optionTo, setOptionTo] = useState<keyof ICurrencies | "">("");
 
-  const [optionFrom, setOptionFrom] = useState<string>(""),
-    [optionTo, setOptionTo] = useState<string>("");
+  const [modal, setModal] = useState<boolean>(false);
 
-  const [modal, setModal] = useState(false);
+  const [disabled, setDisabled] = useState<boolean>(false);
 
-  const [disabled, setDisabled] = useState(false);
-
-  let modalClassName = "modal",
-    modalContentClassName = "modal-content";
+  let modalClassName: string = "modal",
+    modalContentClassName: string = "modal-content";
 
   if (!modal) {
     modalClassName += " modal-hidden";
@@ -34,34 +35,44 @@ function TransferPage() {
     modalContentClassName += " modal-content-opened";
   }
 
+  async function fetchCurrencies(url: string) {
+    try {
+      const response = await axios.get<IFetchingData>(url);
+
+      const currValue =
+        +fromCurrency / +response.data.rates[optionFrom as keyof ICurrencies];
+
+      const result =
+        currValue * +response.data.rates[optionTo as keyof ICurrencies];
+
+      if (fromCurrency && optionTo && optionFrom) {
+        setToCurrency(result % 1 === 0 ? +result : +result.toFixed(5));
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   function changeModalStatus() {
-    if (!fromCurrency || !optionFrom || !optionTo) {
+    if (!fromCurrency || !optionTo || !optionFrom) {
       setModal(!modal);
       setDisabled(!disabled);
     }
   }
 
-  function changeCurrencyOption() {
-    getData("https://www.cbr-xml-daily.ru/latest.js")
-      .then((data) => {
-        if ("rates" in data) {
-          const currValue = Number(fromCurrency) / data.rates[optionFrom],
-            result = currValue * data.rates[optionTo];
-
-          if (fromCurrency && optionFrom && optionTo) {
-            setToCurrency(
-              String(result % 1 === 0 ? result : result.toFixed(5))
-            );
-          }
-        }
-      })
-      .catch((err) => {
-        throw new Error(err);
-      });
+  function changeCurrencyOption(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    fetchCurrencies("https://www.cbr-xml-daily.ru/latest.js");
   }
 
   return (
-    <div className="transfer">
+    <form
+      onSubmit={(e) => {
+        changeCurrencyOption(e);
+        changeModalStatus();
+      }}
+      className="transfer"
+    >
       <h1>Transfer to currency</h1>
 
       <BlockInput
@@ -73,18 +84,10 @@ function TransferPage() {
       />
 
       <div className="buttons">
-        <Button
-          onClick={() => {
-            changeCurrencyOption();
-            changeModalStatus();
-          }}
-          disabled={disabled}
-          type="button"
-          title={"transfer"}
-        />
+        <Button disabled={disabled} type="submit" title={"transfer"} />
 
         <Button
-          type="button"
+          type="reset"
           onClick={() => {
             setFromCurrency("");
             setToCurrency("");
@@ -109,8 +112,8 @@ function TransferPage() {
         modalClassName={modalClassName}
         modalContentClassName={modalContentClassName}
       />
-    </div>
+    </form>
   );
-}
+};
 
 export default TransferPage;

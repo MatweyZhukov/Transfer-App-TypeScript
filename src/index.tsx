@@ -1,5 +1,5 @@
 //Global
-import React from "react";
+import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 
 //Styles
@@ -13,7 +13,7 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
+  <StrictMode>
     <App />
-  </React.StrictMode>
+  </StrictMode>
 );

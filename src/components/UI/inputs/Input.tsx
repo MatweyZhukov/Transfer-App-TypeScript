@@ -1,14 +1,17 @@
-//Types
-import { IInput } from "../../../types/interfaces";
+//Global
+import { FC } from "react";
 
-function Input({
+//Types
+import { IInput } from "../../../types/types";
+
+const Input: FC<IInput> = ({
   value,
   placeholder,
   type,
   readOnly,
   onChange,
   checked,
-}: IInput) {
+}) => {
   return (
     <input
       checked={checked}
@@ -19,6 +22,6 @@ function Input({
       readOnly={readOnly}
     />
   );
-}
+};
 
 export default Input;
