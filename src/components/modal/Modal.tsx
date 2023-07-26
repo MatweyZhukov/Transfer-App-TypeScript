@@ -16,7 +16,14 @@ const Modal: FC<IModal> = ({
   onClick,
 }) => {
   return (
-    <div className={modalClassName}>
+    <div
+      onClick={(e) => {
+        if (e.target === document.querySelector(".modal")) {
+          onClick();
+        }
+      }}
+      className={modalClassName}
+    >
       <div className={modalContentClassName}>
         <div className="close">
           <SVG onClick={onClick} id="close" width={30} height={30} />

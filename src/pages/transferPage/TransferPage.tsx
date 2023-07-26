@@ -14,11 +14,17 @@ import { ICurrencies, IFetchingData, IBlockInput } from "../../types/types";
 import "./transferPage.css";
 
 const TransferPage: FC = () => {
-  const [fromCurrency, setFromCurrency] = useState<IBlockInput["value"]>(""),
-    [toCurrency, setToCurrency] = useState<IBlockInput["value"]>("");
+  const [fromCurrency, setFromCurrency] = useState<IBlockInput["value"] | "">(
+      ""
+    ),
+    [toCurrency, setToCurrency] = useState<IBlockInput["value"] | "">("");
 
-  const [optionFrom, setOptionFrom] = useState<keyof ICurrencies | "">(""),
-    [optionTo, setOptionTo] = useState<keyof ICurrencies | "">("");
+  const [optionFrom, setOptionFrom] = useState<
+      keyof ICurrencies | "Currency..."
+    >("Currency..."),
+    [optionTo, setOptionTo] = useState<keyof ICurrencies | "Currency...">(
+      "Currency..."
+    );
 
   const [modal, setModal] = useState<boolean>(false);
 
@@ -45,7 +51,11 @@ const TransferPage: FC = () => {
       const result =
         currValue * +response.data.rates[optionTo as keyof ICurrencies];
 
-      if (fromCurrency && optionTo && optionFrom) {
+      if (
+        fromCurrency &&
+        optionTo !== "Currency..." &&
+        optionFrom !== "Currency..."
+      ) {
         setToCurrency(result % 1 === 0 ? +result : +result.toFixed(5));
       }
     } catch (e) {
@@ -54,7 +64,11 @@ const TransferPage: FC = () => {
   }
 
   function changeModalStatus() {
-    if (!fromCurrency || !optionTo || !optionFrom) {
+    if (
+      !fromCurrency ||
+      optionFrom === "Currency..." ||
+      optionTo === "Currency..."
+    ) {
       setModal(!modal);
       setDisabled(!disabled);
     }
@@ -91,8 +105,8 @@ const TransferPage: FC = () => {
           onClick={() => {
             setFromCurrency("");
             setToCurrency("");
-            setOptionFrom("");
-            setOptionTo("");
+            setOptionFrom("Currency...");
+            setOptionTo("Currency...");
           }}
           title={"clear"}
         />

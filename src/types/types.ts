@@ -78,7 +78,7 @@ export interface IInput {
 export interface IBlockInput {
   value: number | "";
   setValue: Dispatch<SetStateAction<IBlockInput["value"]>>;
-  option: keyof ICurrencies | "";
+  option: keyof ICurrencies | "Currency...";
   setOption: Dispatch<SetStateAction<IBlockInput["option"]>>;
   placeholder: string;
   readOnly?: boolean;
